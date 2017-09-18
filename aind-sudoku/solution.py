@@ -42,19 +42,21 @@ def naked_twins(values):
     """
 
     # Find all instances of naked twins by first locating all the entres of length = 2  
-    
-    for unit in unitlist:
+    nonDiag = row_units + column_units + square_units
+    for unit in nonDiag:
         boxGroup = [(box1,box2) for box1 in unit for box2 in unit if values[box1]==values[box2] and len(values[box1])==2 and box1 != box2]
         if len(boxGroup) > 0:
             for i in range(len(boxGroup)):
                 box1 = boxGroup[i][0]
                 box2 = boxGroup[i][1]
                 vals = values[box1]
-                peerGroup = peers[box1] & peers[box2]
-                for peer in peerGroup:
-                    if len(values[peer]) > 2:
+                ##peerGroup = peers[box1].intersection(peers[box2])# & peers[box2]
+                for peer in unit:
+                    if peer != box1 and peer !=box2:
                         for val in vals:
                             assign_value(values,peer,values[peer].replace(val,""))
+
+                            
     return values
 
 def grid_values(grid):
@@ -70,7 +72,7 @@ def grid_values(grid):
     dct = dict(zip(boxes,grid))
     nums = '123456789'
     for key in dct:
-        if dct[key] == '.':
+        if '.' in dct[key]:
             dct[key] = nums
     return dct
 
@@ -185,6 +187,7 @@ def solve(grid):
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
     display(solve(diag_sudoku_grid))
+    #display(solve())
 
     try:
         from visualize import visualize_assignments
